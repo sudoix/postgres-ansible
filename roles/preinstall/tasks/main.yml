@@ -1,6 +1,9 @@
 ---
 # tasks file for preinstall
 
+- name: Install docker packages
+  include_tasks: docker.yml
+
 - name: Update apt chache
   apt:
     update_cache: yes
@@ -21,6 +24,10 @@
       - etcd
       - gcc
       - jq
+      - curl
+      - git
+      - vim
+      - nload
     state: present
 
 - name: Stop postgresql-14 service
