@@ -1,6 +1,9 @@
 ---
 # tasks file for preinstall
 
+- name: Install docker packages
+  include_tasks: docker.yml
+
 - name: Update apt chache
   apt:
     update_cache: yes
@@ -19,12 +22,24 @@
       - python3-dev
       - libpq-dev
       - etcd
+      - gcc
+      - jq
+      - curl
+      - git
+      - vim
+      - nload
     state: present
 
-- name: Stop postgresql-14 services
+- name: Stop postgresql-14 service
   service:
     name: postgresql
     state: stopped
+
+- name: Stop and disable etcd service
+  service:
+    name: etcd
+    state: stopped
+    enabled: false
 
 - name: Add hosts to /etc/hosts
   lineinfile:
@@ -48,3 +63,16 @@
     state: link
   loop: "{{ postgres_binaries.files }}"
 
+- name: Install and upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+    executable: pip3
+
+- name: Install pip packages
+  pip:
+    name:
+      - patroni
+      - python-etcd
+      - psycopg2
+    state: present
