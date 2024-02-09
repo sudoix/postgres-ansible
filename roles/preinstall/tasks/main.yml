@@ -76,3 +76,8 @@
       - python-etcd
       - psycopg2
     state: present
+
+- name: Copy docker compose file
+  template:
+    src: docker-compose.yml.j2
+    dest: /tmp/docker-compose.yml
