@@ -1,0 +1,41 @@
+- name: Create a patroni directory if it does not exist
+  file:
+    path: /data/patroni
+    state: directory
+    mode: '0700'
+    owner: postgres
+    group: postgres
+
+- name: Install and upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+    executable: pip3
+
+- name: Install pip packages
+  pip:
+    name:
+      - patroni
+      - python-etcd
+      - psycopg2
+    state: present
+
+- name: Copy patrony config
+  template:
+    src: patroni.yml.j2
+    dest: /etc/patroni.yml
+
+- name: Copy patroni service file
+  copy:
+    src: patroni.service
+    dest: /etc/systemd/system/patroni.service
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Start Patroni service
+  systemd:
+    name: patroni
+    state: started
+    enabled: true

@@ -1,59 +1,11 @@
 ---
 # tasks file for preinstall
 
-- name: Install packages
-  apt:
-    pkg:
-      - postgresql-14
-      - postgresql-contrib-14
-    state: present
+- name: Install docker packages
+  include_tasks: docker.yml
 
-- name: Stop postgresql-14 service
-  service:
-    name: postgresql
-    state: stopped
+- name: Install and config postgres packages
+  include_tasks: postgres.yml
 
-- name: Stop and disable etcd service
-  service:
-    name: etcd
-    state: stopped
-    enabled: false
-
-- name: List PostgreSQL binaries
-  ansible.builtin.find:
-    paths: /usr/lib/postgresql/14/bin/
-    patterns: '*'
-    file_type: file
-  register: postgres_binaries
-
-- name: Create symbolic links
-  ansible.builtin.file:
-    src: "{{ item.path }}"
-    dest: "/usr/sbin/{{ item.path | basename }}"
-    state: link
-  loop: "{{ postgres_binaries.files }}"
-
-- name: Install and upgrade pip
-  pip:
-    name: pip
-    extra_args: --upgrade
-    executable: pip3
-
-- name: Install pip packages
-  pip:
-    name:
-      - patroni
-      - python-etcd
-      - psycopg2
-    state: present
-
-- name: Create a patroni directory if it does not exist
-  file:
-    path: /data/docker
-    state: directory
-    mode: '0700'
-
-- name: Copy docker compose file
-  template:
-    src: docker-compose.yml.j2
-    dest: /data/docker/docker-compose.yml
+- name: Install and config patroni packages
+  include_tasks: patroni.yml
