@@ -1,9 +1,6 @@
 ---
 # tasks file for preinstall
 
-- name: Install docker packages
-  include_tasks: docker.yml
-
 - name: Update apt chache
   apt:
     update_cache: yes
@@ -19,7 +16,6 @@
       - python3-pip
       - python3-dev
       - libpq-dev
-      - etcd
       - gcc
       - jq
       - curl
