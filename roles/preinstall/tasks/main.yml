@@ -16,8 +16,6 @@
 - name: Install packages
   apt:
     pkg:
-      - postgresql-14
-      - postgresql-contrib-14
       - python3-pip
       - python3-dev
       - libpq-dev
@@ -30,17 +28,6 @@
       - nload
     state: present
 
-- name: Stop postgresql-14 service
-  service:
-    name: postgresql
-    state: stopped
-
-- name: Stop and disable etcd service
-  service:
-    name: etcd
-    state: stopped
-    enabled: false
-
 - name: Add hosts to /etc/hosts
   lineinfile:
     path: /etc/hosts
@@ -48,36 +35,3 @@
     state: present
   loop: "{{ groups['all'] }}"
   when: hostvars[item].private_ip is defined
-
-- name: List PostgreSQL binaries
-  ansible.builtin.find:
-    paths: /usr/lib/postgresql/14/bin/
-    patterns: '*'
-    file_type: file
-  register: postgres_binaries
-
-- name: Create symbolic links
-  ansible.builtin.file:
-    src: "{{ item.path }}"
-    dest: "/usr/sbin/{{ item.path | basename }}"
-    state: link
-  loop: "{{ postgres_binaries.files }}"
-
-- name: Install and upgrade pip
-  pip:
-    name: pip
-    extra_args: --upgrade
-    executable: pip3
-
-- name: Install pip packages
-  pip:
-    name:
-      - patroni
-      - python-etcd
-      - psycopg2
-    state: present
-
-- name: Copy docker compose file
-  template:
-    src: docker-compose.yml.j2
-    dest: /tmp/docker-compose.yml
