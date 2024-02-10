@@ -1,0 +1,14 @@
+listen stats
+      mode http
+      bind *:7000
+      stats enable
+      stats uri /
+listen postgres
+      bind *:5000
+      mode tcp
+      option httpchk
+      http-check expect status 200
+      default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+      server node1 10.130.4.150:5432 maxconn 100   check   port 8008
+      server node2 10.130.4.151:5432 maxconn 100   check   port 8008
+      server node3 10.130.4.152:5432 maxconn 100   check   port 8008

@@ -1,61 +1,61 @@
 ---
 # tasks file for haproxy
 
-- name: Install loadbalancer packages
-  apt:
-    update_cache: true
-    name:
-      - haproxy
-      - keepalived
-    state: latest
-    update_cache: true
+# - name: Install loadbalancer packages
+#   apt:
+#     update_cache: true
+#     name:
+#       - haproxy
+#       - keepalived
+#     state: latest
+#     update_cache: true
 
-- name: Create a patroni directory if it does not exist
-  file:
-    path: /data/patroni
-    state: directory
-    mode: '0700'
-    owner: postgres
-    group: postgres
+# - name: Create a patroni directory if it does not exist
+#   file:
+#     path: /data/patroni
+#     state: directory
+#     mode: '0700'
+    # owner: postgres
+    # group: postgres
 
 - name: Copy patrony config
   template:
     src: patroni.yml.j2
     dest: /etc/patroni.yml
 
-- name: Copy patroni service file
-  copy:
-    src: patroni.service
-    dest: /etc/systemd/system/patroni.service
+# - name: Copy patroni service file
+#   copy:
+#     src: patroni.service
+#     dest: /etc/systemd/system/patroni.service
 
-- name: Reload systemd daemon
-  systemd:
-    daemon_reload: yes
+# - name: Reload systemd daemon
+#   systemd:
+#     daemon_reload: yes
 
-- name: Start Patroni service
-  systemd:
-    name: patroni
-    state: started
-    enabled: true
+# - name: Start Patroni service
+#   systemd:
+#     name: patroni
+#     state: started
+#     enabled: true
 
-- name: Copy haproxy config
-  template:
-    src: haproxy.cfg.j2
-    dest: /etc/haproxy/haproxy.cfg
+# - name: Copy haproxy config
+#   template:
+#     src: haproxy.cfg.j2
+#     dest: /etc/haproxy/haproxy.cfg
 
-- name: Copy keepalived config
-  template:
-    src: keepalived.conf.j2
-    dest: /etc/keepalived/keepalived.conf
+# - name: Copy keepalived config
+#   template:
+#     src: keepalived.conf.j2
+#     dest: /etc/keepalived/keepalived.conf
 
-- name: Start and enable the keepalived service
-  ansible.builtin.service:
-    name: keepalived
-    state: restarted
-    enabled: yes
+# - name: Start and enable the keepalived service
+#   ansible.builtin.service:
+#     name: keepalived
+#     state: restarted
+#     enabled: yes
 
-- name: Start and enable the haproxy service
-  ansible.builtin.service:
-    name: haproxy
-    state: restarted
-    enabled: yes
+# - name: Start and enable the haproxy service
+#   ansible.builtin.service:
+#     name: haproxy
+#     state: restarted
+#     enabled: yes

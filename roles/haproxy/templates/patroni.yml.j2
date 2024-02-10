@@ -5,7 +5,7 @@ restapi:
   listen: {{ hostvars[inventory_hostname]['private_ip'] }}:8008
   connect_address: {{ hostvars[inventory_hostname]['private_ip'] }}:8008
 etcd:
-  hosts: 10.130.4.150:2379,10.130.4.151:2379,10.130.4.152:2379
+  hosts: "{% for host in groups['psql'] %}{{ hostvars[host]['private_ip'] }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
 bootstrap:
   dcs:
     ttl: 30
@@ -19,10 +19,11 @@ bootstrap:
     - data-checksums
   pg_hba:
     - host replication replicator   127.0.0.1/32 md5
-    - host replication replicator   10.130.4.150/0   md5
-    - host replication replicator   10.130.4.151/0   md5
-    - host replication replicator   10.130.4.152/0   md5
-    - host all all   0.0.0.0/0   md5
+    # Managed by Ansible
+  {% for host in groups['psql'] %}
+  - host replication replicator {{ hostvars[host]['private_ip'] }}/32 md5
+  {% endfor %}
+  - host all all   0.0.0.0/0   md5
   users:
     admin:
        password: admin
