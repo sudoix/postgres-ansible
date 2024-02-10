@@ -1,0 +1,50 @@
+scope: postgres
+namespace: /db/
+name: node1
+restapi:
+  listen: {{ hostvars[inventory_hostname]['private_ip'] }}:8008
+  connect_address: {{ hostvars[inventory_hostname]['private_ip'] }}:8008
+etcd:
+  hosts: 10.130.4.150:2379,10.130.4.151:2379,10.130.4.152:2379
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+    use_pg_rewind: true
+  initdb:
+    - encoding: UTF8
+    - data-checksums
+  pg_hba:
+    - host replication replicator   127.0.0.1/32 md5
+    - host replication replicator   10.130.4.150/0   md5
+    - host replication replicator   10.130.4.151/0   md5
+    - host replication replicator   10.130.4.152/0   md5
+    - host all all   0.0.0.0/0   md5
+  users:
+    admin:
+       password: admin
+       options:
+       - createrole
+       - createdb
+postgresql:
+   listen: 10.130.4.150:5432
+   connect_address: 10.130.4.150:5432
+   data_dir:     /data/patroni
+   pgpass:     /tmp/pgpass
+   authentication:
+    replication:
+      username:   replicator
+      password:     "Test"
+    superuser:
+      username:   postgres
+      password:     "Test"
+      parameters:
+      unix_socket_directories:  '.'
+tags:
+   nofailover:   false
+   noloadbalance:   false
+   clonefrom:   false
+   nosync:   false
