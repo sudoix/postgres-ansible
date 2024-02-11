@@ -1,11 +1,11 @@
 scope: postgres
 namespace: /db/
-name: node1
+name: node{{ etcd_suffix }}
 restapi:
   listen: {{ hostvars[inventory_hostname]['private_ip'] }}:8008
   connect_address: {{ hostvars[inventory_hostname]['private_ip'] }}:8008
 etcd:
-  hosts: "{% for host in groups['psql'] %}{{ hostvars[host]['private_ip'] }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
+        hosts: "{% for host in groups['psql'] %}{{ hostvars[host]['private_ip'] }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
 bootstrap:
   dcs:
     ttl: 30
@@ -21,7 +21,7 @@ bootstrap:
     - host replication replicator   127.0.0.1/32 md5
     # Managed by Ansible
   {% for host in groups['psql'] %}
-  - host replication replicator {{ hostvars[host]['private_ip'] }}/32 md5
+  - host replication replicator {{ hostvars[host]['private_ip'] }}/0 md5
   {% endfor %}
   - host all all   0.0.0.0/0   md5
   users:
@@ -38,10 +38,10 @@ postgresql:
    authentication:
     replication:
       username:   replicator
-      password:     "Test"
+      password:     {{ psql_user_passwords }}
     superuser:
       username:   postgres
-      password:     "Test"
+      password:     {{ psql_user_passwords }}
       parameters:
       unix_socket_directories:  '.'
 tags:
