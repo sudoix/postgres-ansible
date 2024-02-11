@@ -2,7 +2,7 @@
   file:
     path: /data/patroni
     state: directory
-    mode: '0777'
+    mode: '0700'
     owner: postgres
     group: postgres
 
