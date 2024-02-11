@@ -31,3 +31,9 @@
     state: present
   loop: "{{ groups['all'] }}"
   when: hostvars[item].private_ip is defined
+
+- name: Create a patroni directory if it does not exist
+  file:
+    path: /data/
+    state: directory
+    mode: '0777'
