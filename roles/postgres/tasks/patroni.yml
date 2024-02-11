@@ -2,7 +2,7 @@
   file:
     path: /data/patroni
     state: directory
-    mode: '0700'
+    mode: '0777'
     owner: postgres
     group: postgres
 
@@ -39,3 +39,8 @@
     name: patroni
     state: started
     enabled: true
+
+- name: Retart Patroni service
+  systemd:
+    name: patroni
+    state: restarted
