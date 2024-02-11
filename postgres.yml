@@ -4,3 +4,17 @@
   gather_facts: yes
   any_errors_fatal: true
   tags: [preinstall]
+
+- hosts: psql
+  roles:
+    - role: postgres
+  gather_facts: yes
+  any_errors_fatal: true
+  tags: [postgres]
+
+- hosts: ha
+  roles:
+    - role: haproxy
+  gather_facts: yes
+  any_errors_fatal: true
+  tags: [haproxy]

@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  etcd:
+    image: quay.io/coreos/etcd:v2.3.8
+    container_name: etcd{{ etcd_suffix }}
+    volumes:
+      - /usr/share/ca-certificates/:/etc/ssl/certs
+      - /var/lib/etcd/data:/var/lib/etcd/data
+    ports:
+      - "4001:4001"
+      - "2380:2380"
+      - "2379:2379"
+    restart: always
+    command: >
+      -name "etcd{{ etcd_suffix }}"
+      -data-dir /var/lib/etcd/data
+      -advertise-client-urls http://{{ hostvars[inventory_hostname]['private_ip'] }}:2379,http://{{ hostvars[inventory_hostname]['private_ip'] }}:4001
+      -listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001
+      -initial-advertise-peer-urls http://"{{ hostvars[inventory_hostname]['private_ip'] }}":2380
+      -listen-peer-urls http://0.0.0.0:2380
+      -initial-cluster-token etcd-cluster-1
+      -initial-cluster etcd0=http://{{ hostvars['postgres1']['private_ip'] }}:2380,etcd1=http://{{ hostvars['postgres2']['private_ip'] }}:2380,etcd2=http://{{ hostvars['postgres3']['private_ip'] }}:2380
+      -initial-cluster-state new
+

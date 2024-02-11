@@ -1,0 +1,23 @@
+vrrp_script chk_postgresql {
+  script "killall -0 postgres"
+  interval 2
+  weight 2
+}
+
+vrrp_instance VI_1 {
+  state MASTER
+  interface {{ keepalive_eth_name }}
+  virtual_router_id 51
+  priority 100
+  advert_int 1
+  authentication {
+    auth_type PASS
+    auth_pass {{ auth_password }}
+  }
+  virtual_ipaddress {
+    {{ virtual_ip }}/24   # Virtual IP address for PostgreSQL access
+  }
+  track_script {
+    chk_postgresql
+  }
+}

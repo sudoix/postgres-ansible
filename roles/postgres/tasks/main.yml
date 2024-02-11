@@ -1,0 +1,11 @@
+---
+# tasks file for preinstall
+
+- name: Install docker packages
+  include_tasks: docker.yml
+
+- name: Install and config postgres packages
+  include_tasks: postgres.yml
+
+- name: Install and config patroni packages
+  include_tasks: patroni.yml

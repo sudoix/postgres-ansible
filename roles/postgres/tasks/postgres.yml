@@ -1,0 +1,58 @@
+- name: Install packages
+  apt:
+    pkg:
+      - postgresql-14
+      - postgresql-contrib-14
+      - etcd
+    state: present
+
+- name: Stop postgresql-14 service
+  service:
+    name: postgresql
+    state: stopped
+    enabled: false
+
+- name: Stop and disable etcd service
+  service:
+    name: etcd
+    state: stopped
+    enabled: false
+
+- name: List PostgreSQL binaries
+  ansible.builtin.find:
+    paths: /usr/lib/postgresql/14/bin/
+    patterns: '*'
+    file_type: file
+  register: postgres_binaries
+
+- name: Create symbolic links
+  ansible.builtin.file:
+    src: "{{ item.path }}"
+    dest: "/usr/sbin/{{ item.path | basename }}"
+    state: link
+  loop: "{{ postgres_binaries.files }}"
+
+- name: Create a Docker directory if it does not exist
+  file:
+    path: /data/docker
+    state: directory
+    mode: '0777'
+
+- name: Check if a ETCD docker compose exists
+  stat:
+    path: /data/docker/docker-compose.yml
+  register: file_stat
+
+
+- name: Down ETCD docker compose
+  shell: docker-compose -f /data/docker/docker-compose.yml down
+  when: file_stat.stat.exists
+
+
+- name: Copy ETCD docker compose file
+  template:
+    src: docker-compose.yml.j2
+    dest: /data/docker/docker-compose.yml
+
+- name: Up ETCD docker compose
+  shell: docker-compose -f /data/docker/docker-compose.yml up -d
