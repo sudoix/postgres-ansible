@@ -36,4 +36,4 @@
   file:
     path: /data/
     state: directory
-    mode: '0777'
+    mode: '0755'
