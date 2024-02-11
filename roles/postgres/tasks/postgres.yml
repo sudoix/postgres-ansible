@@ -10,6 +10,7 @@
   service:
     name: postgresql
     state: stopped
+    enabled: false
 
 - name: Stop and disable etcd service
   service:
@@ -35,9 +36,23 @@
   file:
     path: /data/docker
     state: directory
-    mode: '0700'
+    mode: '0777'
+
+- name: Check if a ETCD docker compose exists
+  stat:
+    path: /data/docker/docker-compose.yml
+  register: file_stat
+
+
+- name: Down ETCD docker compose
+  shell: docker-compose -f /data/docker/docker-compose.yml down
+  when: file_stat.stat.exists
+
 
 - name: Copy ETCD docker compose file
   template:
     src: docker-compose.yml.j2
     dest: /data/docker/docker-compose.yml
+
+- name: Up ETCD docker compose
+  shell: docker-compose -f /data/docker/docker-compose.yml up -d
