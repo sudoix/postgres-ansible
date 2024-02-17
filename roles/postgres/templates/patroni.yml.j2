@@ -37,7 +37,7 @@ postgresql:
    pgpass:     /tmp/pgpass
    authentication:
     replication:
-      username:   replicator
+      username:   {{ psql_replicator_username }}
       password:     {{ psql_user_passwords }}
     superuser:
       username:   postgres
