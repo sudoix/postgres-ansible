@@ -38,10 +38,10 @@ postgresql:
    authentication:
     replication:
       username:   {{ psql_replicator_username }}
-      password:     {{ psql_user_passwords }}
+      password:     "{{ psql_replicator_passwords }}"
     superuser:
       username:   postgres
-      password:     {{ psql_user_passwords }}
+      password:     "{{ psql_superuser_passwords }}"
       parameters:
       unix_socket_directories:  '.'
 tags:
