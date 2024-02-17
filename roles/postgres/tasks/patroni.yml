@@ -20,11 +20,6 @@
       - psycopg2
     state: present
 
-- name: Copy pgpass config
-  template:
-    src: pgpass.j2
-    dest: /tmp/pgpass
-
 - name: Copy patrony config
   template:
     src: patroni.yml.j2
