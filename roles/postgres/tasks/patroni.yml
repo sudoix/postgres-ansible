@@ -35,12 +35,14 @@
     daemon_reload: yes
 
 - name: Start Patroni service
+  throttle: 1 # This will ensure the task runs on one host at a time
   systemd:
     name: patroni
     state: started
     enabled: true
 
 - name: Retart Patroni service
+  throttle: 1
   systemd:
     name: patroni
     state: restarted
