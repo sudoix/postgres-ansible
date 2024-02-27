@@ -42,12 +42,12 @@
   stat:
     path: /data/docker/docker-compose.yml
   register: file_stat
-
+  ignore_errors: true
 
 - name: Down ETCD docker compose
   shell: docker-compose -f /data/docker/docker-compose.yml down
   when: file_stat.stat.exists
-
+  ignore_errors: true
 
 - name: Copy ETCD docker compose file
   template:
