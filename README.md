@@ -20,6 +20,29 @@ List your databases:
 patronictl -c /etc/patroni.yml list
 ```
 
+
+                                        +------------------+
+                                        |  Client Access   |
+                                        +--------+---------+
+                                                 |
+                                        _________|_________
+                            +--------v--------+    +-------+--------+
+                            |    HAProxy      |    |    HAProxy     |
+                            | (Load Balancer) |    |(Load Balancer) |
+                            +--------+--------+    +--------+-------+
+                                     |___________  _______|                                              
+                                                 |
+                            +--------------------+---------------------+
+                            |                    |                     |
+                            |                    |                     |
+                            v                    v                     v
+                    +-------+--------+   +-------+--------+    +-------+--------+
+                    |  Server 1      |   |  Server 2      |    |  Server 3      |
+                    | (Patroni-etcd) |   | (Patroni-etcd) |    | (Patroni-etcd) |
+                    |   Postgresql1  |   |  Postgresql2   |    |  Postgresql3   |
+                    +-------+--------+   +-------+--------+    +-------+--------+
+
+
 Connect to databases:
 
 ```
