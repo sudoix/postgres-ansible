@@ -1,0 +1,54 @@
+## install pg_bouncer 
+
+- name: Install curl and ca-certificates
+  apt:
+    name:
+      - curl
+      - ca-certificates
+    state: present
+    update_cache: yes
+
+- name: Create pgdg directory
+  file:
+    path: /usr/share/postgresql-common/pgdg
+    state: directory
+    mode: '0755'
+
+- name: Download PostgreSQL GPG key
+  get_url:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    dest: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+    mode: '0644'
+
+- name: Add PostgreSQL APT repository
+  shell: >
+    sh -c 'echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+  args:
+    executable: /bin/bash
+
+- name: Update APT package cache
+  apt:
+    update_cache: yes
+
+- name: Install pgbouncer
+  apt:
+    name: pgbouncer
+    state: present
+
+- name: Copy pgbouncer configuration file
+  template:
+    src: pgbouncer.ini.j2
+    dest: /etc/pgbouncer/pgbouncer.ini
+    mode: '0640'
+
+- name: Copy pgbouncer user list file
+  template:
+    src: userlist.txt.j2
+    dest: /etc/pgbouncer/userlist.txt
+    mode: '0640'
+
+- name: Restart pgbouncer service
+  service:
+    name: pgbouncer
+    state: restarted
+    enabled: yes

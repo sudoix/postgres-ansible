@@ -3,6 +3,7 @@
     pkg:
       - postgresql-14
       - postgresql-contrib-14
+      - postgresql-client-14
       - etcd
     state: present
 

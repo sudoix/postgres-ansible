@@ -18,12 +18,12 @@ bootstrap:
     - encoding: UTF8
     - data-checksums
   pg_hba:
-    - host replication replicator   127.0.0.1/32 md5
+    - host replication replicator   127.0.0.1/32 scram-sha-256
     # Managed by Ansible
   {% for host in groups['psql'] %}
-  - host replication replicator {{ hostvars[host]['private_ip'] }}/0 md5
+  - host replication replicator {{ hostvars[host]['private_ip'] }}/0 scram-sha-256
   {% endfor %}
-  - host all all   0.0.0.0/0   md5
+  - host all all   0.0.0.0/0   scram-sha-256
   users:
     admin:
        password: admin

@@ -2,6 +2,8 @@
   roles:
     - role: preinstall
   gather_facts: yes
+  remote_user: root
+  serial: 1
   any_errors_fatal: true
   tags: [preinstall]
 
@@ -9,6 +11,8 @@
   roles:
     - role: postgres
   gather_facts: yes
+  remote_user: root
+  serial: 1
   any_errors_fatal: true
   tags: [postgres]
 
@@ -16,5 +20,27 @@
   roles:
     - role: haproxy
   gather_facts: yes
+  remote_user: root
+  serial: 1
   any_errors_fatal: true
   tags: [haproxy]
+
+- hosts: ha
+  roles:
+    - role: pgbouncer
+  gather_facts: yes
+  remote_user: root
+  serial: 1
+  any_errors_fatal: true
+  tags: [pgbouncer]
+
+
+- hosts: ha
+  roles:
+    - role: keepalived
+  gather_facts: yes
+  remote_user: root
+  serial: 1
+  any_errors_fatal: true
+  tags: [keepalived]
+

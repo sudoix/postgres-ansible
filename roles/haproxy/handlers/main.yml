@@ -1,2 +1,16 @@
 ---
 # handlers file for haproxy
+- name: restart pgbouncer
+  service:
+    name: pgbouncer
+    state: restarted
+
+- name: restart logrotate
+  systemd:
+    name: logrotate
+    state: restarted
+  become: yes
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
