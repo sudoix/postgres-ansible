@@ -29,6 +29,8 @@ patronictl -c /etc/patroni.yml list
                             +--------v--------+    +-------+--------+
                             |    HAProxy      |    |    HAProxy     |
                             | (Load Balancer) |    |(Load Balancer) |
+                            |       +         |    |       +        |
+                            |   pg-bouncer    |    |   pg-bouncer   |
                             +--------+--------+    +--------+-------+
                                      |___________  _______|                                              
                                                  |

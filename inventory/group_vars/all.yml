@@ -4,11 +4,24 @@ disable_transparent_huge_pages: "true"
 setup_interface: "false"
 
 # DNS
-
-resolv_nameservers: [178.22.122.100, 185.51.200.2] # 403.online
+resolv_nameservers: [178.22.122.100, 185.51.200.2] # shecan
 use_iran: "true" # change it to "false" if you are outside of iran
-# Docker
 
+
+# Docker
 docker_gpg_key_url: "https://download.docker.com/linux/ubuntu/gpg"
 docker_gpg_key_path: "/etc/apt/keyrings/docker.gpg"
 docker_apt_repo: "https://download.docker.com/linux/ubuntu"
+
+# VRIP HAPRoXY 
+haproxy_vip: "192.168.2.254"
+
+# Pg_bouncer
+db_user: "postgres"
+db_name: "postgres"
+pgbouncer_ini_template: "pgbouncer.ini.j2"
+userlist_txt_template: "userlist.txt.j2"
+pgbouncer_ini_path: "/etc/pgbouncer/pgbouncer.ini"
+pgbouncer_ini_backup: "/etc/pgbouncer/pgbouncer.ini.bak"
+userlist_txt_path: "/etc/pgbouncer/userlist.txt"
+userlist_txt_backup: "/etc/pgbouncer/userlist.txt.bak"

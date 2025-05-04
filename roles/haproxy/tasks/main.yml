@@ -6,7 +6,6 @@
     update_cache: true
     name:
       - haproxy
-      - keepalived
     state: latest
     update_cache: true
 
@@ -15,19 +14,9 @@
     src: haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg
 
-- name: Copy keepalived config
-  template:
-    src: keepalived.conf.j2
-    dest: /etc/keepalived/keepalived.conf
-
-- name: Start and enable the keepalived service
-  ansible.builtin.service:
-    name: keepalived
-    state: restarted
-    enabled: yes
-
 - name: Start and enable the haproxy service
   ansible.builtin.service:
     name: haproxy
     state: restarted
     enabled: yes
+

@@ -25,6 +25,7 @@
     src: patroni.yml.j2
     dest: /etc/patroni.yml
 
+
 - name: Copy patroni service file
   copy:
     src: patroni.service
